@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Product Management</title>
+	<style>
+		.field{
+			margin-bottom: 10px;
+		}
+		label{
+			display: block;
+		}
+		#divResult{
+			font-size: 22pt;
+			color: red;
+		}
+	</style>
+	<script src="jquery-3.1.1.js"></script>
+	<script src="handlebars-v4.0.5.js"></script>
+	<script type="text/template" id="ProductListTemplate">
+		<div>
+			<label for="">Product Name :</label>
+			<input type="text" name="" id="txtNewProductName">
+			<input type="button" value="Add" id="btnAdd">
+			<ol id="productList">
+				
+
+			</ol>
+		</div>
+	</script>
+	<script type="text/template" id="ProductTemplate">
+		<div>
+			<label for="">Product Name :</label>
+			
+			<div>
+				{{#if edit}}
+				<div>
+					<input type="text" name="" id="txtProductName" value="{{name}}">
+					<input type="button" value="Save" id="btnSave">
+					<input type="button" value="Cancel" id="btnCancel">
+					
+				</div>
+				{{else}}
+				<div>
+					<span>{{name}}</span>
+					<input type="button" value="Edit" id="btnEdit">
+				</div>
+				{{/if}}
+			</div>
+		</div>
+	</script>
+	<script>
+		String.prototype.toInt = function(){
+			return parseInt(this, 10);
+		};
+
+		//Model
+		function ProductCollection(){
+			var _data = [];
+
+			this.add = function(product){
+				_data.push(product);
+				triggerEvent('add', product);
+
+			};
+
+			function triggerEvent(attrName, arg){
+				var subscriptions = _changeHandlers[attrName];
+				subscriptions = subscriptions || [];
+
+				subscriptions.forEach(function(subscription){
+					if (typeof subscription === 'function')
+						subscription(arg);	
+				});
+			}
+
+			var _changeHandlers = {
+
+			};
+			this.toJson = function(){
+				return JSON.parse(JSON.stringify({products : _data}));
+			};
+
+			this.on = function(attrName, changeListener){
+				_changeHandlers[attrName] = _changeHandlers[attrName] || [];
+				_changeHandlers[attrName].push(changeListener);
+			}
+		}
+		function Product(){
+			var _data = {
+				name : '',
+				edit : false
+			};
+
+			this.get = function(attrName){
+				return _data[attrName];
+			};
+
+			this.set = function(attrName, value){
+				_data[attrName] = value;
+				//trigger change notiication for 'attrName'
+				triggerChange(attrName);
+				triggerChange('all');
+				
+			};
+			function triggerChange(attrName){
+				var subscriptions = _changeHandlers[attrName];
+				subscriptions = subscriptions || [];
+
+				subscriptions.forEach(function(subscription){
+					if (typeof subscription === 'function')
+						subscription();	
+				});
+			}
+
+			var _changeHandlers = {
+
+			};
+
+			this.onChange = function(attrName, changeListener){
+				_changeHandlers[attrName] = _changeHandlers[attrName] || [];
+				_changeHandlers[attrName].push(changeListener);
+			}
+
+			this.toJson = function(){
+				var result = {}
+				for(var key in _data)
+					result[key] = _data[key]
+				return result;
+			};
+
+		}
+		
+
+
+
+		//View
+		function ProductView(product){
+			
+			var $root = this.$root = $("<div></div>");
+			var templateFn = null;
+			
+
+			this.render = function(){
+				if (!templateFn){
+					templateFn = Handlebars.compile($("#ProductTemplate").html());
+				}
+				var result = templateFn(product.toJson())
+				this.$root.html(result);
+				return this;
+			}
+
+			var self = this;
+
+			//Reacts to user actions
+			$root.on('click', "#btnEdit", function(){
+				
+				product.set('edit', true);
+			});
+
+			$root.on('click', "#btnSave", function(){
+				var productName = $("#txtProductName", $root).val();
+				product.set('name', productName);
+				product.set('edit', false);
+			});
+
+			$root.on('click', "#btnCancel", function(){
+				product.set('edit', false);
+			});
+			
+			
+			
+			//Reacts to model changes
+			product.onChange('all', this.render.bind(this));
+			
+		}
+
+		function ProductCollectionView(productCollection){
+			
+			var $root = this.$root = $("<div></div>");
+			var templateFn = null;
+			
+
+			this.render = function(){
+				if (!templateFn){
+					templateFn = Handlebars.compile($("#ProductListTemplate").html());
+				}
+				var result = templateFn(productCollection.toJson())
+				this.$root.html(result);
+				return this;
+			}
+
+			var self = this;
+
+			//Reacts to user actions
+			$root.on('click', "#btnAdd", function(){
+				var newProductName = $("#txtNewProductName", $root).val();
+				var newProduct = new Product();
+				newProduct.set('name', newProductName);
+				productCollection.add(newProduct);
+				
+			});
+
+			function onAddNewProduct(newProduct){
+				var productView = new ProductView(newProduct);
+				productView.render().$root.appendTo($("#productList", $root));
+			}
+
+			
+			
+			
+			//Reacts to model changes
+			productCollection.on('add', onAddNewProduct.bind(this));
+			
+		}
+
+
+		
+	</script>
+</head>
+<body>
+	<h1>Product Management</h1>
+	 
+</body>
+</html>
