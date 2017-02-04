@@ -21,6 +21,7 @@
 			return parseInt(this, 10);
 		};
 
+		//Model
 		function SalaryCalculator(){
 			this.basic = 0;
 			this.hra = 0;
@@ -34,14 +35,30 @@
 			this.salary = net;
 		};
 
+
+		//View
 		$(function(){
-			var calculator = new SalaryCalculator();
+			window.calculator = new SalaryCalculator();
+
+			$("#txtBasic").change(function(){
+				calculator.basic = this.value.toInt();
+			});
+
+			$("#txtHra").change(function(){
+				calculator.hra = this.value.toInt();
+			});
+
+			$("#txtDa").change(function(){
+				calculator.da = this.value.toInt();
+			});
+			
+			$("#rangeTax").change(function(){
+				calculator.tax = this.value.toInt();
+			});
+
 
 			$("#btnCalculate").click(function(){
-				calculator.basic = $("#txtBasic").val().toInt();
-				calculator.hra = $("#txtHra").val().toInt();
-				calculator.da = $("#txtDa").val().toInt();
-				calculator.tax = $("#rangeTax").val().toInt();
+				
 
 				calculator.calculate();
 
