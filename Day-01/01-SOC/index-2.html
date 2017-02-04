@@ -96,24 +96,24 @@
 
 
 			//Reacts to user actions
-			$("#txtBasic", $root).change(function(){
+			$root.on('change', "#txtBasic", function(){
 				calculator.set('basic', this.value.toInt());
 			});
 
-			$("#txtHra", $root).change(function(){
+			$root.on('change', "#txtHra", function(){
 				calculator.set('hra', this.value.toInt());
 			});
 
-			$("#txtDa", $root).change(function(){
+			$root.on('change', "#txtDa", function(){
 				calculator.set('da', this.value.toInt());
 			});
 			
-			$("#rangeTax", $root).change(function(){
+			$root.on('change', "#rangeTax", function(){
 				calculator.set('tax', this.value.toInt());
 			});
 
 
-			$("#btnCalculate", $root).click(function(){
+			$root.on('click', "#btnCalculate", function(){
 				calculator.calculate();
 			});
 
