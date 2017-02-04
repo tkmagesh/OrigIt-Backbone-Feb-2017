@@ -68,9 +68,32 @@
 
 
 		//View
-		function SalaryCalculatorView(calculator, $root){
+		function SalaryCalculatorView(calculator){
 
-			
+			var template = `
+			<div id="divCalc1">
+				<hr>
+				<div class="field"><label for="">Basic :</label><input type="text" name="" id="txtBasic"></div>
+				<div class="field"><label for="">HRA :</label><input type="text" name="" id="txtHra"></div>
+				<div class="field"><label for="">DA :</label><input type="text" name="" id="txtDa"></div>
+				<div class="field">
+					<label for="">Tax :</label>
+					<input type="range" name="" id="rangeTax" min="0" max="30" value="0">
+					<span id="spanTax">[Tax]</span>
+				</div>
+				<div class="field"><input type="button" value="Calculate" id="btnCalculate"></div>
+				<div class="field">
+					<div id="divResult">[Salary]</div>
+				</div>
+			</div>
+			`;
+
+			var $root = this.$root = $("<div></div>");
+
+			this.render = function(){
+				this.$root.append(template)
+			}
+
 
 			//Reacts to user actions
 			$("#txtBasic", $root).change(function(){
@@ -121,35 +144,5 @@
 <body>
 	<h1>Salary Calculator</h1>
 	
-	<div id="divCalc1">
-		<hr>
-		<div class="field"><label for="">Basic :</label><input type="text" name="" id="txtBasic"></div>
-		<div class="field"><label for="">HRA :</label><input type="text" name="" id="txtHra"></div>
-		<div class="field"><label for="">DA :</label><input type="text" name="" id="txtDa"></div>
-		<div class="field">
-			<label for="">Tax :</label>
-			<input type="range" name="" id="rangeTax" min="0" max="30" value="0">
-			<span id="spanTax">[Tax]</span>
-		</div>
-		<div class="field"><input type="button" value="Calculate" id="btnCalculate"></div>
-		<div class="field">
-			<div id="divResult">[Salary]</div>
-		</div>
-	</div>
-	<div id="divCalc2">
-		<hr>
-		<div class="field"><label for="">Basic :</label><input type="text" name="" id="txtBasic"></div>
-		<div class="field"><label for="">HRA :</label><input type="text" name="" id="txtHra"></div>
-		<div class="field"><label for="">DA :</label><input type="text" name="" id="txtDa"></div>
-		<div class="field">
-			<label for="">Tax :</label>
-			<input type="range" name="" id="rangeTax" min="0" max="30" value="0">
-			<span id="spanTax">[Tax]</span>
-		</div>
-		<div class="field"><input type="button" value="Calculate" id="btnCalculate"></div>
-		<div class="field">
-			<div id="divResult">[Salary]</div>
-		</div>
-	</div>
 </body>
 </html>
