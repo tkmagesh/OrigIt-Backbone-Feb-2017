@@ -42,10 +42,25 @@ var pgm = (function(){
 		});
 		return promise;
 	}
+
+	function addAsyncDeferred(x,y){
+		console.log('	[Service] addAsyncPromise started');
+
+		var deffered = $.Deferred();
+		setTimeout(function(){
+			var result = x + y;
+			console.log('	[Service] addAsync completed');
+			deffered.resolve(result);
+		}, 5000);
+	
+		return deffered.promise();
+	}
+
 	return {
 		addSyncClient : addSyncClient,
 		addAsyncClient : addAsyncClient,
-		addAsyncPromise : addAsyncPromise
+		addAsyncPromise : addAsyncPromise,
+		addAsyncDeferred : addAsyncDeferred
 	}
 })();
 
